@@ -115,8 +115,7 @@ async function environmentCheck(): Promise<EnvironmentCheckResult> {
       existsSync('/etc/arch-release') &&
       process.env['XDG_SESSION_TYPE'] === 'wayland' &&
       isHyprland &&
-      executableInPath('quickshell') &&
-      conflictingShells.length === 0,
+      executableInPath('quickshell'),
     conflictingShells,
   };
 }
