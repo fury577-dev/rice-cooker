@@ -6,7 +6,18 @@ use std::{env, fs};
 
 use anyhow::{Context, Result, anyhow};
 
-const NOTIFIERS: &[&str] = &["dunst", "mako", "swaync"];
+const NOTIFIERS: &[&str] = &[
+    "dunst",
+    "mako",
+    "swaync",
+    "swayosd-server",
+    "swayosd-watchdog",
+    "waybar",
+    "ags",
+    "astal",
+    "eww",
+    "yambar",
+];
 const KILL_POLL_MS: u64 = 50;
 const KILL_WAIT_MS: u64 = 500;
 // Observed rendering timings on a fast laptop and VM harness (Hyprland):
