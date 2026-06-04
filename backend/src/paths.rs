@@ -15,6 +15,8 @@ pub struct OriginalShell {
     pub argv: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cwd: Option<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub running_daemons: Vec<String>,
 }
 
 /// `home` is the raw $HOME (used for `~/` expansion in catalog `symlink_dst`),
@@ -32,7 +34,16 @@ impl Paths {
         let home = resolve_home_from(std::env::var("HOME").ok().as_deref())?;
         let config_home =
             resolve_config_home_from(std::env::var("XDG_CONFIG_HOME").ok().as_deref(), &home)?;
-        let xdg = BaseDirectories::with_prefix("phantom-cooker");
+        let exe_name = std::env::current_exe()
+            .ok()
+            .and_then(|p| p.file_name().map(|n| n.to_string_lossy().into_owned()))
+            .unwrap_or_default();
+        let prefix = if exe_name.contains("rice-cooker") {
+            "rice-cooker"
+        } else {
+            "phantom-cooker"
+        };
+        let xdg = BaseDirectories::with_prefix(prefix);
         // PHANTOM_COOKER_CACHE_DIR redirects the whole cache root without touching
         // XDG env vars — convenient for tests against the built binary.
         let cache_home = match std::env::var("PHANTOM_COOKER_CACHE_DIR") {
@@ -339,6 +350,7 @@ mod tests {
         let shell = OriginalShell {
             argv: vec!["qs".into(), "-c".into(), "clock".into()],
             cwd: Some("/home/x".into()),
+            running_daemons: Vec::new(),
         };
         p.set_original(Some(&shell)).unwrap();
         assert_eq!(p.original().unwrap(), Some(shell));

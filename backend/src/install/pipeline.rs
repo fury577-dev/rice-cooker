@@ -377,6 +377,10 @@ fn uninstall_locked<W: Write>(
     try_stage!(events, "kill_quickshell", process::kill_quickshell());
     step(events, Step::KillQuickshell, StepState::Done)?;
 
+    step(events, Step::Notifiers, StepState::Start)?;
+    try_stage!(events, "notifiers", process::kill_notif_daemons());
+    step(events, Step::Notifiers, StepState::Done)?;
+
     // Pre-filter via pacman -Q so retries don't abort on "target not found".
     step(events, Step::Deps, StepState::Start)?;
     if !record.pacman_diff.added_explicit.is_empty() {
@@ -476,26 +480,38 @@ fn fail_and_rollback_activation<W: Write>(
 /// whatever the user has launched since.
 fn replay_original_shell<W: Write>(paths: &Paths, events: &mut EventWriter<W>) -> Result<bool> {
     let original = try_stage!(events, "replay", "read_original", paths.original());
-    let replay_err = if let Some(shell) = original
-        && !shell.argv.is_empty()
-    {
-        step(events, Step::Replay, StepState::Start)?;
-        let cwd = shell
-            .cwd
-            .as_deref()
-            .map(Path::new)
-            .unwrap_or_else(|| Path::new("/"));
-        let log = paths.last_run_log();
-        match process::launch_argv(&shell.argv, cwd, &log) {
-            Ok(()) => {
-                step(events, Step::Replay, StepState::Done)?;
-                None
+    let mut replay_err = None;
+    if let Some(shell) = original {
+        if !shell.running_daemons.is_empty() {
+            step(events, Step::Replay, StepState::Start)?;
+            for daemon in &shell.running_daemons {
+                if let Err(e) = process::launch_daemon(daemon) {
+                    replay_err = Some((format!("relaunching daemon {daemon}: {e:#}"), String::new()));
+                }
             }
-            Err(e) => Some((format!("{e:#}"), read_tail(&log))),
         }
-    } else {
-        None
-    };
+        if !shell.argv.is_empty() {
+            if shell.running_daemons.is_empty() {
+                step(events, Step::Replay, StepState::Start)?;
+            }
+            let cwd = shell
+                .cwd
+                .as_deref()
+                .map(Path::new)
+                .unwrap_or_else(|| Path::new("/"));
+            let log = paths.last_run_log();
+            match process::launch_argv(&shell.argv, cwd, &log) {
+                Ok(()) => {
+                    step(events, Step::Replay, StepState::Done)?;
+                }
+                Err(e) => {
+                    replay_err = Some((format!("{e:#}"), read_tail(&log)));
+                }
+            }
+        } else if !shell.running_daemons.is_empty() {
+            step(events, Step::Replay, StepState::Done)?;
+        }
+    }
     let clear_err = paths.clear_original().err();
     match (replay_err, clear_err) {
         (Some((reason, tail)), None) => {
@@ -790,12 +806,23 @@ fn read_tail(path: &Path) -> String {
 }
 
 fn record_original(paths: &Paths) -> Result<()> {
+    let mut running_daemons = Vec::new();
+    for name in process::NOTIFIERS {
+        if process::is_process_running(name)? {
+            running_daemons.push(name.to_string());
+        }
+    }
     match process::find_running_quickshell()? {
         Some(proc) => paths.set_original(Some(&OriginalShell {
             argv: proc.cmdline,
             cwd: proc.cwd.map(|p| p.to_string_lossy().into_owned()),
+            running_daemons,
         })),
-        None => paths.set_original(None),
+        None => paths.set_original(Some(&OriginalShell {
+            argv: Vec::new(),
+            cwd: None,
+            running_daemons,
+        })),
     }
 }
 

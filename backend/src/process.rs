@@ -6,7 +6,7 @@ use std::{env, fs};
 
 use anyhow::{Context, Result, anyhow};
 
-const NOTIFIERS: &[&str] = &[
+pub const NOTIFIERS: &[&str] = &[
     "dunst",
     "mako",
     "swaync",
@@ -78,6 +78,30 @@ fn qs_cmdline_pattern(name: &str) -> String {
 pub fn kill_notif_daemons() -> Result<()> {
     for name in NOTIFIERS {
         run_pkill(&["-TERM", "-x", name])?;
+    }
+    Ok(())
+}
+
+pub fn is_process_running(name: &str) -> Result<bool> {
+    pgrep_matches(&["-x", name])
+}
+
+pub fn launch_daemon(name: &str) -> Result<()> {
+    let log_path = format!("/tmp/phantom-cooker-daemon-{}.log", name);
+    let log_file = fs::File::create(&log_path)
+        .with_context(|| format!("creating daemon log file {}", log_path))?;
+    let log_err = log_file.try_clone()?;
+
+    let status = Command::new("setsid")
+        .arg("-f")
+        .arg(name)
+        .stdin(Stdio::null())
+        .stdout(log_file)
+        .stderr(log_err)
+        .status()
+        .with_context(|| format!("spawning setsid {name}"))?;
+    if !status.success() {
+        return Err(anyhow!("setsid failed to spawn {name} (exit {status})"));
     }
     Ok(())
 }

@@ -85,6 +85,7 @@ repo = "https://github.com/RyuZinOh/.dotfiles"
 commit = "9380b0232e69a847459c35d0e7c417dead0cb3be"
 symlink_src = "quickshell"
 symlink_dst = "~/.config/quickshell/ryu-shell"
+install_deps = ["ttf-cascadia-code-nerd", "noto-fonts-cjk"]
 preview_deps = ["ttf-cascadia-code-nerd", "noto-fonts-cjk"]
 
 [nandoroid]
@@ -97,7 +98,7 @@ symlink_dst = "~/.config/quickshell/nandoroid"
 preview_deps = ["ttf-material-symbols-variable"]
 
 [persona-quickshell]
-display_name = "Persona-Quickshell"
+display_name = "Persona 3"
 creator_name = "Yujonpradhananga"
 repo = "https://github.com/Yujonpradhananga/Persona-Quickshell"
 commit = "7d917d45c913c7f5fc28e428174eb5c66899fb8f"
