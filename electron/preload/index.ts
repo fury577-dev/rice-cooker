@@ -1,0 +1,32 @@
+import { contextBridge, ipcRenderer } from 'electron';
+import type {
+  BackendEvent,
+  BackendRunRequest,
+  BackendRunResult,
+  EnvironmentCheckResult,
+  RiceListRow,
+} from '../../src/shared/backend';
+
+const api = {
+  closeWindow: () => ipcRenderer.send('window:close'),
+  openExternal: (url: string) => ipcRenderer.invoke('app:openExternal', url) as Promise<boolean>,
+  backend: {
+    list: () => ipcRenderer.invoke('backend:list') as Promise<RiceListRow[]>,
+    run: (request: BackendRunRequest) =>
+      ipcRenderer.invoke('backend:run', request) as Promise<BackendRunResult>,
+    onEvent: (callback: (event: BackendEvent) => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, backendEvent: BackendEvent) => {
+        callback(backendEvent);
+      };
+      ipcRenderer.on('backend:event', listener);
+      return () => ipcRenderer.removeListener('backend:event', listener);
+    },
+  },
+  environment: {
+    check: () => ipcRenderer.invoke('environment:check') as Promise<EnvironmentCheckResult>,
+  },
+};
+
+contextBridge.exposeInMainWorld('rice', api);
+
+export type RiceApi = typeof api;

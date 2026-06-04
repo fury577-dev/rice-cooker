@@ -1,0 +1,243 @@
+.root {
+  position: absolute;
+  z-index: 4;
+  width: 199.999px;
+  height: 200.001px;
+}
+
+.rim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Cream inner circle (350:6632 / 350:7412) — 176 × 176 centered; clips
+   everything inside to the circle shape. */
+.inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 176px;
+  height: 176px;
+  background: var(--c-wheel-inner);
+  border-radius: 50%;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+  transition: background-color var(--theme-color-transition);
+}
+
+/* Dotted grid background (350:6633 / 350:7413) — same asset in both
+   states. Extends 8px above the circle's top so the grid bleeds past the
+   top edge before being clipped by the round inner. */
+.grid {
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  width: 190px;
+  height: 191.805px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.gridBleed {
+  position: absolute;
+  inset: -0.39%;
+}
+
+.gridBleed > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+/* View-specific content layers, stacked and crossfaded. */
+.content {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- Picking content (bead indicator + niri/dms + WASD) ---- */
+
+/* Bead: always a 25 × 25 circle. Framer-motion animates `scale` to resize
+   between pill (scale 1, active, shows number) and the smaller halo
+   diameters (scale 0.58 / 0.38 / 0.27 for LG/MD/SM); outside the arc,
+   scale 0. Keeping width === height === 25 means transform scale just
+   shrinks the circle uniformly, no width/height interpolation. */
+.bead {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background: var(--c-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  pointer-events: none;
+  transition: background-color var(--theme-color-transition);
+}
+
+.beadNum {
+  font-family: var(--font-display);
+  font-size: var(--fs-letter);
+  color: var(--c-step-text);
+  line-height: 1;
+  transition:
+    color var(--theme-color-transition),
+    opacity 0.2s ease-out;
+}
+
+.tag {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: var(--fs-tag);
+  font-weight: 400;
+  color: var(--color-brown);
+  line-height: normal;
+  white-space: nowrap;
+  --outline-color: var(--c-accent);
+  --outline-width: 6px;
+}
+
+.riceName {
+  left: 50%;
+  top: 64px;
+  width: 142px;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--rice-name-size, var(--fs-tag));
+  text-align: center;
+  line-height: 0.9;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.key {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 4px;
+  background: var(--c-accent);
+  pointer-events: none;
+  transition: background-color var(--theme-color-transition);
+}
+
+.keyPressed {
+  background: var(--color-orange);
+  transition: background-color 80ms ease-out;
+}
+
+.key_up {
+  left: 86.08px;
+  top: 148px;
+}
+
+.key_down {
+  left: 86px;
+  top: 159.92px;
+}
+
+.key_right {
+  left: 98px;
+  top: 160px;
+}
+
+.key_left {
+  left: 74px;
+  top: 160px;
+}
+
+.previewDots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.previewDot {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--c-preview-dot);
+  transition: background-color var(--theme-color-transition);
+}
+
+.previewGraphic {
+  position: absolute;
+  display: block;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  pointer-events: none;
+  --preview-graphic-fill: var(--c-preview-dot);
+  --preview-graphic-text: var(--color-brown);
+}
+
+.previewGraphic *,
+.bootGraphic * {
+  transition:
+    fill var(--theme-color-transition),
+    stroke var(--theme-color-transition);
+}
+
+.previewGraphic_install {
+  left: calc(50% + 0.09px);
+  top: calc(50% + 0.09px);
+  width: 127px;
+  height: 71px;
+}
+
+.previewGraphic_leave {
+  left: calc(50% + 0.09px);
+  top: calc(50% - 0.25px);
+  width: 119px;
+  height: 75px;
+}
+
+.previewGraphic_dots {
+  left: calc(50% - 0.41px);
+  top: calc(50% - 0.41px);
+  width: 114px;
+  height: 75px;
+}
+
+.previewGraphic_ready {
+  left: calc(50% + 0.09px);
+  top: calc(50% + 0.09px);
+  width: 107px;
+  height: 76px;
+}
+
+.previewGraphic_lookingGood {
+  left: calc(50% + 0.42px);
+  top: calc(50% - 0.13px);
+  width: 121px;
+  height: 77px;
+}
+
+.previewGraphic_loadingPreview {
+  left: calc(50% + 0.5px);
+  top: 50%;
+  width: 137px;
+  height: 78px;
+}
+
+.previewGraphic_installing {
+  left: 50%;
+  top: calc(50% + 0.5px);
+  width: 136px;
+  height: 43px;
+}
+
+.bootGraphic {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  color: var(--color-brown);
+}

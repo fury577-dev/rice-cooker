@@ -1,0 +1,105 @@
+# rice-cooker catalog: one file keyed by rice name.
+# Filename stem of each [table] is the CLI id: `rice-cooker install <stem>`.
+#
+# `commit` is any Git ref accepted by `git checkout --detach`:
+# branch name (e.g. `commit = "stable"`), tag, full SHA, or short SHA.
+#
+# You can submit a rice by adding it to the catalog & opening a PR, and/or submitting this form: 
+# Rice cooker v0.1 only applies quickshell configs & installs dependencies.
+# Preview dependencies are any dependencies that aren't in rice-cooker that the rice would fail to preview without.
+# We recommend packaging your rice with nix flakes. Rice cooker will be updated to support them soon.
+
+[noctalia]
+display_name = "Noctalia"
+creator_name = "noctalia-dev"
+repo = "https://github.com/noctalia-dev/noctalia-shell"
+commit = "d7b68652e79bce5813dc4fea7e51636a5da3e1b7"
+symlink_src = "."
+symlink_dst = "~/.config/quickshell/noctalia"
+install_deps = [
+  "noctalia-shell",
+  "cliphist",
+  "wlsunset",
+  "power-profiles-daemon",
+  "ddcutil",
+  "wl-clipboard",
+  "wtype"
+]
+preview_deps = ["noctalia-qs"]
+
+[linux-retroism]
+display_name = "linux-retroism"
+creator_name = "diinki"
+repo = "https://github.com/diinki/linux-retroism"
+commit = "255eb6a7b5a0d26413eea8dc5f47e8d67bb4b1ff"
+symlink_src = "configs/quickshell"
+symlink_dst = "~/.config/quickshell/linux-retroism"
+
+[dms]
+display_name = "DankMaterialShell"
+creator_name = "AvengeMedia"
+repo = "https://github.com/AvengeMedia/DankMaterialShell"
+commit = "c6ed64b24e414cd4b9588b645a6345b15fa697f4"
+symlink_src = "quickshell"
+symlink_dst = "~/.config/quickshell/dms"
+
+[zephyr]
+display_name = "Zephyr"
+creator_name = "flickowoa"
+repo = "https://github.com/flickowoa/dotfiles"
+commit = "92a33e776a844070bab67cd4a4a1a688b3ea6730"
+symlink_src = "quickshell"
+symlink_dst = "~/.config/quickshell/zephyr"
+
+[caelestia]
+display_name = "Caelestia"
+creator_name = "soramenew"
+repo = "https://github.com/caelestia-dots/shell"
+commit = "stable"
+symlink_src = "."
+symlink_dst = "~/.config/quickshell/caelestia"
+package_managed = true
+preview_deps = ["quickshell-git", "caelestia-shell"]
+
+[whisker]
+display_name = "whisker"
+creator_name = "corecathx"
+repo = "https://github.com/corecathx/whisker"
+commit = "ab1edb84b7b8cf1c0514d12f1c639f8c863e3900"
+symlink_src = "."
+symlink_dst = "~/.config/quickshell/whisker"
+install_deps = [
+  "cliphist",
+  "wl-clipboard",
+  "ffmpeg",
+  "gpu-screen-recorder",
+  "pipewire",
+  "whisker-shell-git"
+]
+preview_deps = ["ttf-material-symbols-variable", "ttf-outfit"]
+
+[ryu-shell]
+display_name = "Ryu Shell"
+creator_name = "RyuZinOh"
+repo = "https://github.com/RyuZinOh/.dotfiles"
+commit = "9380b0232e69a847459c35d0e7c417dead0cb3be"
+symlink_src = "quickshell"
+symlink_dst = "~/.config/quickshell/ryu-shell"
+preview_deps = ["ttf-cascadia-code-nerd", "noto-fonts-cjk"]
+
+[nandoroid]
+display_name = "Nandoroid"
+creator_name = "na-ive"
+repo = "https://github.com/na-ive/nandoroid-shell"
+commit = "c24bda36581fe7a34c692f2798a9296dcfca6f93"
+symlink_src = "dotfiles/.config/quickshell/nandoroid"
+symlink_dst = "~/.config/quickshell/nandoroid"
+preview_deps = ["ttf-material-symbols-variable"]
+
+[persona-quickshell]
+display_name = "Persona-Quickshell"
+creator_name = "Yujonpradhananga"
+repo = "https://github.com/Yujonpradhananga/Persona-Quickshell"
+commit = "7d917d45c913c7f5fc28e428174eb5c66899fb8f"
+symlink_src = "."
+symlink_dst = "~/.config/quickshell/persona-quickshell"

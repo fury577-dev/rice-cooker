@@ -1,0 +1,246 @@
+.wrap {
+  position: absolute;
+  inset: calc(-1 * var(--card-border-width));
+}
+
+.navLabel {
+  position: absolute;
+  top: 11px;
+  transform: translateX(-50%);
+  font-family: var(--font-pill);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--c-preview-nav);
+  line-height: normal;
+  letter-spacing: -0.28px;
+  text-align: center;
+  white-space: nowrap;
+  transition: color var(--theme-color-transition);
+}
+
+.prevLabel {
+  left: 180.91px;
+}
+
+.nextLabel {
+  left: 237.91px;
+}
+
+.confirmLabel {
+  left: 321.91px;
+}
+
+.actionBtn {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  padding: 10px;
+  border-radius: 200px;
+  background: var(--c-preview-action-bg);
+  color: var(--c-preview-action-icon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    left 140ms ease-out,
+    top 140ms ease-out,
+    width 140ms ease-out,
+    height 140ms ease-out,
+    background-color 100ms ease-out,
+    color 100ms ease-out;
+}
+
+.actionIcon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  --fill-0: currentcolor;
+  --stroke-0: currentcolor;
+}
+
+.actionActive {
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  background: var(--c-preview-action-active-bg);
+  color: var(--c-preview-action-active-icon);
+}
+
+.action_leave {
+  left: 18px;
+  top: 19px;
+}
+
+.action_leave.actionActive {
+  left: 31px;
+  top: 24px;
+}
+
+.action_install {
+  left: 20px;
+  top: 94px;
+}
+
+.action_install.actionActive {
+  left: 30px;
+  top: 90px;
+}
+
+.actionUnavailable {
+  background: #3d373c;
+  color: #878784;
+}
+
+.action_dots {
+  left: 20px;
+  top: 167px;
+}
+
+.action_dots.actionActive {
+  left: 31px;
+  top: 156px;
+}
+
+.pointer {
+  position: absolute;
+  pointer-events: none;
+  transform-origin: center;
+  color: var(--c-preview-pointer);
+  transition: color var(--theme-color-transition);
+}
+
+.pointerLeave {
+  left: 42.69px;
+  top: 75.06px;
+  width: 9.535px;
+  height: 8.921px;
+  transform: rotate(195.03deg);
+}
+
+.pointerInstallTop {
+  left: 42px;
+  top: 78px;
+  width: 9.66px;
+  height: 9.075px;
+  transform: rotate(-16.56deg);
+}
+
+.pointerInstallBottom {
+  left: 42px;
+  top: 140px;
+  width: 9.533px;
+  height: 8.919px;
+  transform: rotate(195deg);
+}
+
+.pointerDots {
+  left: 42px;
+  top: 145px;
+  width: 9.533px;
+  height: 8.919px;
+  transform: rotate(-15deg);
+}
+
+.wordPill {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 10px;
+  border: 0;
+  border-radius: 130px;
+  background: var(--c-preview-word-bg);
+  color: var(--color-brown);
+  cursor: pointer;
+  font: inherit;
+  transition:
+    left 140ms ease-out,
+    top 140ms ease-out,
+    background-color var(--theme-color-transition),
+    color var(--theme-color-transition);
+}
+
+.word_leave {
+  left: calc(50% - 33.5px);
+  top: calc(50% - 38.5px);
+}
+
+.word_install {
+  left: calc(50% + 0.5px);
+  top: calc(50% - 0.5px);
+}
+
+.wordUnavailable {
+  width: 268px;
+  height: 64px;
+  padding: 0;
+  background: #3d373c;
+  color: var(--c-card-border);
+  cursor: default;
+}
+
+.word_dots {
+  left: calc(50% - 50.5px);
+  top: calc(50% + 38.5px);
+}
+
+.unavailableText {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 10px);
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.wordCluster {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+}
+
+.wordLetter {
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  border-radius: 100px;
+  background: var(--c-preview-word-letter-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-pill);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--c-preview-word-letter-text);
+  line-height: 1;
+  text-align: center;
+  transition:
+    background-color var(--theme-color-transition),
+    color var(--theme-color-transition);
+}
+
+.metaLabel {
+  position: absolute;
+  left: calc(50% + 1px);
+  top: calc(50% + 77.5px);
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--c-preview-meta);
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+  transition: color var(--theme-color-transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actionBtn,
+  .wordPill {
+    transition: none;
+  }
+}

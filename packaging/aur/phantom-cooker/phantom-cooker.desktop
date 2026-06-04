@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Phantom Cooker
+Comment=a visual (toy) tool for ricing
+Exec=phantom-cooker %U
+Icon=phantom-cooker
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=rice;hyprland;quickshell;theme;desktop;
+StartupWMClass=phantom-cooker

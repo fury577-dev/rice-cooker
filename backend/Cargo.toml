@@ -1,0 +1,38 @@
+[package]
+name = "phantom-cooker-backend"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "BSD-3-Clause"
+
+[[bin]]
+name = "phantom-cooker-backend"
+path = "src/main.rs"
+
+[lib]
+name = "phantom_cooker_backend"
+path = "src/lib.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+fs4 = "0.13"
+indexmap = { version = "2", features = ["serde"] }
+regex = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+time = { version = "0.3", features = ["formatting", "macros", "serde-human-readable"] }
+toml = "0.8"
+xdg = "3"
+
+[dev-dependencies]
+assert_cmd = "2"
+insta = "1.47.2"
+tempfile = "3"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+lto = "thin"

@@ -1,0 +1,33 @@
+/* Main card. Position + size are motion-driven (see view.tsx / POSITIONS).
+   Background is set inline per-view (solid in picking, 80% in shrunken). */
+.card {
+  position: absolute;
+  z-index: 2;
+  border: var(--card-border-width) solid var(--c-card-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  transition:
+    background-color var(--theme-color-transition),
+    border-color var(--theme-color-transition);
+}
+
+.bg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 552px;
+  height: 558px;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0.5;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.bgShrunken {
+  left: -124.5px;
+  top: -216.5px;
+  width: 636px;
+  height: 644px;
+  transform: none;
+}

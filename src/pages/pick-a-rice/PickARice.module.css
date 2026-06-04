@@ -1,0 +1,27 @@
+/* Keeps the 666px Figma stage but clips the unused 16px left gutter in the Electron window. */
+.stage {
+  position: relative;
+  width: 666px;
+  height: 574px;
+  transform: translateX(-16px);
+}
+
+.pickerContent {
+  opacity: 1;
+  transition: opacity 100ms linear;
+}
+
+.pickerContentHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.menuContent {
+  opacity: 1;
+  transition: opacity 100ms linear;
+}
+
+.menuContentExiting {
+  opacity: 0;
+  pointer-events: none;
+}

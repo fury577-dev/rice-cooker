@@ -1,0 +1,22 @@
+---
+source: tests/cli.rs
+expression: stdout
+---
+[
+  {
+    "name": "one",
+    "display_name": "One",
+    "creator_name": "author-one",
+    "repo": "https://example.invalid/one",
+    "install_supported": true,
+    "installed": false
+  },
+  {
+    "name": "two",
+    "display_name": "Two",
+    "creator_name": "author-two",
+    "repo": "https://example.invalid/two",
+    "install_supported": false,
+    "installed": false
+  }
+]
