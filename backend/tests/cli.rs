@@ -39,14 +39,14 @@ fn scratch() -> TempDir {
 }
 
 fn cmd(t: &TempDir) -> Command {
-    let mut c = Command::cargo_bin("phantom-cooker-backend").unwrap();
+    let mut c = Command::cargo_bin("rice-cooker-backend").unwrap();
     // Isolate from the developer's real rice-cooker state. `Paths::from_env`
-    // honors HOME + XDG_* + PHANTOM_COOKER_CACHE_DIR.
+    // honors HOME + XDG_* + RICE_COOKER_CACHE_DIR.
     c.env_clear()
         .env("HOME", t.path())
         .env("XDG_CACHE_HOME", t.path().join("cache"))
         .env("XDG_DATA_HOME", t.path().join("data"))
-        .env("PHANTOM_COOKER_CACHE_DIR", t.path().join("cache/phantom-cooker"))
+        .env("RICE_COOKER_CACHE_DIR", t.path().join("cache/rice-cooker"))
         .env("PATH", std::env::var("PATH").unwrap_or_default());
     c
 }

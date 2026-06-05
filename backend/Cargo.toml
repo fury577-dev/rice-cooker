@@ -1,16 +1,16 @@
 [package]
-name = "phantom-cooker-backend"
+name = "rice-cooker-backend"
 version = "0.1.0"
 edition = "2024"
 publish = false
 license = "BSD-3-Clause"
 
 [[bin]]
-name = "phantom-cooker-backend"
+name = "rice-cooker-backend"
 path = "src/main.rs"
 
 [lib]
-name = "phantom_cooker_backend"
+name = "rice_cooker_backend"
 path = "src/lib.rs"
 
 [dependencies]

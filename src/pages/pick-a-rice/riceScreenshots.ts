@@ -4,6 +4,7 @@ import dmsScreenshot from '@/assets/rices/dankmaterialshell.webp';
 import linuxRetroismScreenshot from '@/assets/rices/linux-retroism.webp';
 import nandoroidScreenshot from '@/assets/rices/nandoroid.webp';
 import noctaliaScreenshot from '@/assets/rices/noctalia.webp';
+import personaQuickshellScreenshot from '@/assets/rices/persona-quickshell.webp';
 import ryuShellScreenshot from '@/assets/rices/ryu-shell.webp';
 import whiskerScreenshot from '@/assets/rices/whisker.webp';
 import zephyrScreenshot from '@/assets/rices/zephyr.webp';
@@ -14,6 +15,7 @@ const SCREENSHOTS: Record<string, string> = {
   'linux-retroism': linuxRetroismScreenshot,
   nandoroid: nandoroidScreenshot,
   noctalia: noctaliaScreenshot,
+  'persona-quickshell': personaQuickshellScreenshot,
   'ryu-shell': ryuShellScreenshot,
   whisker: whiskerScreenshot,
   zephyr: zephyrScreenshot,

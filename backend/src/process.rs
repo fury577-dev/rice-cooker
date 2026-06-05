@@ -56,7 +56,7 @@ pub fn check_graphical_session() -> Result<()> {
             "XDG_RUNTIME_DIR is not an absolute directory: {runtime:?}"
         ));
     }
-    let probe = runtime.join(format!(".phantom-cooker-session-check-{}", std::process::id()));
+    let probe = runtime.join(format!(".rice-cooker-session-check-{}", std::process::id()));
     fs::create_dir(&probe)
         .with_context(|| format!("XDG_RUNTIME_DIR is not writable: {runtime:?}"))?;
     let _ = fs::remove_dir(&probe);
@@ -75,9 +75,54 @@ fn qs_cmdline_pattern(name: &str) -> String {
     format!("quickshell -c {}", regex::escape(name))
 }
 
+fn is_systemd_service(name: &str) -> bool {
+    let service_name = if name.ends_with(".service") {
+        name.to_string()
+    } else {
+        format!("{}.service", name)
+    };
+    let output = Command::new("systemctl")
+        .args([
+            "--user",
+            "show",
+            &service_name,
+            "--property=LoadState",
+            "--property=UnitFileState",
+            "--property=ActiveState",
+        ])
+        .output();
+    match output {
+        Ok(out) if out.status.success() => {
+            let s = String::from_utf8_lossy(&out.stdout);
+            let mut is_loaded = false;
+            let mut is_enabled = false;
+            let mut is_active = false;
+            for line in s.lines() {
+                if let Some((k, v)) = line.split_once('=') {
+                    match k {
+                        "LoadState" => is_loaded = v == "loaded",
+                        "UnitFileState" => is_enabled = v == "enabled",
+                        "ActiveState" => is_active = v == "active",
+                        _ => {}
+                    }
+                }
+            }
+            is_loaded && (is_enabled || is_active)
+        }
+        _ => false,
+    }
+}
+
 pub fn kill_notif_daemons() -> Result<()> {
     for name in NOTIFIERS {
-        run_pkill(&["-TERM", "-x", name])?;
+        if is_systemd_service(name) {
+            let service_name = format!("{}.service", name);
+            let _ = Command::new("systemctl")
+                .args(["--user", "stop", &service_name])
+                .status();
+        } else {
+            run_pkill(&["-TERM", "-x", name])?;
+        }
     }
     Ok(())
 }
@@ -87,7 +132,19 @@ pub fn is_process_running(name: &str) -> Result<bool> {
 }
 
 pub fn launch_daemon(name: &str) -> Result<()> {
-    let log_path = format!("/tmp/phantom-cooker-daemon-{}.log", name);
+    if is_systemd_service(name) {
+        let service_name = format!("{}.service", name);
+        let status = Command::new("systemctl")
+            .args(["--user", "start", &service_name])
+            .status()
+            .with_context(|| format!("starting systemd service {service_name}"))?;
+        if !status.success() {
+            return Err(anyhow!("systemctl start {service_name} failed: {status}"));
+        }
+        return Ok(());
+    }
+
+    let log_path = format!("/tmp/rice-cooker-daemon-{}.log", name);
     let log_file = fs::File::create(&log_path)
         .with_context(|| format!("creating daemon log file {}", log_path))?;
     let log_err = log_file.try_clone()?;

@@ -324,6 +324,41 @@ fn run_activate<W: Write>(
         }
     }
 
+    // Run post-activation hook cooker-install.sh if present
+    let clone_dir = try_stage!(events, "hooks", paths.clone_dir(name));
+    let install_hook = clone_dir.join("cooker-install.sh");
+    if install_hook.exists() {
+        let status = Command::new("bash")
+            .arg(&install_hook)
+            .env("RICE_NAME", name)
+            .env("RICE_DIR", &clone_dir)
+            .current_dir(&clone_dir)
+            .status();
+        match status {
+            Ok(s) if s.success() => {}
+            Ok(s) => {
+                return fail_and_rollback_activation(
+                    paths,
+                    events,
+                    name,
+                    "hooks",
+                    &format!("cooker-install.sh failed: {s}"),
+                    None,
+                );
+            }
+            Err(e) => {
+                return fail_and_rollback_activation(
+                    paths,
+                    events,
+                    name,
+                    "hooks",
+                    &format!("failed to run cooker-install.sh: {e:#}"),
+                    None,
+                );
+            }
+        }
+    }
+
     events.emit(&Event::Success {
         active: Some(name.to_string()),
     })?;
@@ -372,6 +407,43 @@ fn uninstall_locked<W: Write>(
     // A tampered current.json must surface as a Fail, not bare Err (post-hello contract).
     let record_path = try_stage!(events, "record", "path", paths.record_json(name));
     let record = try_stage!(events, "record", "load", load_record(&record_path));
+
+    // Run post-deactivation hook cooker-uninstall.sh if present
+    let clone_dir = try_stage!(events, "hooks", paths.clone_dir(name));
+    let uninstall_hook = clone_dir.join("cooker-uninstall.sh");
+    if uninstall_hook.exists() {
+        let status = Command::new("bash")
+            .arg(&uninstall_hook)
+            .env("RICE_NAME", name)
+            .env("RICE_DIR", &clone_dir)
+            .current_dir(&clone_dir)
+            .status();
+        match status {
+            Ok(s) if s.success() => {}
+            Ok(s) => {
+                if !flags.force {
+                    emit_fail(
+                        events,
+                        "hooks",
+                        &format!("cooker-uninstall.sh failed: {s}"),
+                        None,
+                    )?;
+                    return Ok(false);
+                }
+            }
+            Err(e) => {
+                if !flags.force {
+                    emit_fail(
+                        events,
+                        "hooks",
+                        &format!("failed to run cooker-uninstall.sh: {e:#}"),
+                        None,
+                    )?;
+                    return Ok(false);
+                }
+            }
+        }
+    }
 
     step(events, Step::KillQuickshell, StepState::Start)?;
     try_stage!(events, "kill_quickshell", process::kill_quickshell());
@@ -578,7 +650,7 @@ pub fn list(cat: &Catalog, paths: &Paths) -> Result<Vec<ListRow>> {
             display_name: entry.display_name.clone(),
             creator_name: entry.creator_name.clone(),
             repo: entry.repo.clone(),
-            install_supported: !entry.install_deps.is_empty(),
+            install_supported: !entry.package_managed,
             installed: current.as_deref() == Some(name.as_str()),
         })
         .collect())
@@ -989,8 +1061,8 @@ mod tests {
     fn tmp_paths() -> (tempfile::TempDir, Paths) {
         let t = tempfile::tempdir().unwrap();
         let home = t.path().to_path_buf();
-        let cache = home.join(".cache/phantom-cooker");
-        let data = home.join(".local/share/phantom-cooker");
+        let cache = home.join(".cache/rice-cooker");
+        let data = home.join(".local/share/rice-cooker");
         fs::create_dir_all(&cache).unwrap();
         fs::create_dir_all(&data).unwrap();
         let p = Paths::at_roots(home, cache, data);

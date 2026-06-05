@@ -4,15 +4,15 @@ use std::process::ExitCode;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use phantom_cooker_backend::catalog::Catalog;
-use phantom_cooker_backend::events::EventWriter;
-use phantom_cooker_backend::install::{self, Flags};
-use phantom_cooker_backend::paths::Paths;
+use rice_cooker_backend::catalog::Catalog;
+use rice_cooker_backend::events::EventWriter;
+use rice_cooker_backend::install::{self, Flags};
+use rice_cooker_backend::paths::Paths;
 
 #[derive(Parser)]
-#[command(name = "phantom-cooker-backend", about = "Quickshell rice install engine")]
+#[command(name = "rice-cooker-backend", about = "Quickshell rice install engine")]
 struct Cli {
-    /// Alternate catalog file path (default: XDG-data lookup for phantom-cooker/catalog.toml).
+    /// Alternate catalog file path (default: XDG-data lookup for rice-cooker/catalog.toml).
     #[arg(long, global = true)]
     catalog: Option<PathBuf>,
     #[command(subcommand)]
@@ -26,7 +26,7 @@ enum Cmd {
     /// Install <name> fully and launch it; evicts any currently-active rice.
     Install { name: String },
     /// Uninstall the active rice and replay the pre-rice shell. Clone stays
-    /// cached at `~/.cache/phantom-cooker/rices/<name>/`.
+    /// cached at `~/.cache/rice-cooker/rices/<name>/`.
     Uninstall {
         #[arg(long)]
         force: bool,
@@ -42,7 +42,7 @@ fn main() -> ExitCode {
         Ok(true) => ExitCode::SUCCESS,
         Ok(false) => ExitCode::from(1), // Fail event already on stdout
         Err(e) => {
-            eprintln!("phantom-cooker: {e:#}");
+            eprintln!("rice-cooker: {e:#}");
             ExitCode::from(1)
         }
     }
@@ -90,16 +90,16 @@ fn run() -> Result<bool> {
 
 /// Resolve the catalog location in preference order:
 /// 1. `--catalog` flag
-/// 2. `$PHANTOM_COOKER_CATALOG` env var
+/// 2. `$RICE_COOKER_CATALOG` env var
 /// 3. CWD-relative dev paths (`./backend/catalog.toml`, `./catalog.toml`)
 /// 4. `Paths::find_catalog()` — walks `$XDG_DATA_HOME` then `$XDG_DATA_DIRS`
-///    looking for `phantom-cooker/catalog.toml` (standard XDG Base Directory lookup
+///    looking for `rice-cooker/catalog.toml` (standard XDG Base Directory lookup
 ///    for read-only application data; the packaged install lands here).
 fn catalog_path(paths: &Paths, flag: Option<&std::path::Path>) -> Result<PathBuf> {
     if let Some(p) = flag {
         return Ok(p.to_path_buf());
     }
-    if let Ok(p) = std::env::var("PHANTOM_COOKER_CATALOG")
+    if let Ok(p) = std::env::var("RICE_COOKER_CATALOG")
         && !p.is_empty()
     {
         return Ok(PathBuf::from(p));
@@ -122,10 +122,10 @@ fn catalog_path(paths: &Paths, flag: Option<&std::path::Path>) -> Result<PathBuf
         .join("\n");
     Err(anyhow::anyhow!(
         "no catalog found. Tried:\n  \
-         --catalog flag, $PHANTOM_COOKER_CATALOG\n  \
+         --catalog flag, $RICE_COOKER_CATALOG\n  \
          ./backend/catalog.toml, ./catalog.toml (cwd: {})\n{}\n\
-         Install the phantom-cooker package, pass --catalog <path>, or set \
-         PHANTOM_COOKER_CATALOG.",
+         Install the rice-cooker package, pass --catalog <path>, or set \
+         RICE_COOKER_CATALOG.",
         cwd.display(),
         xdg_list
     ))

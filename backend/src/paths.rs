@@ -41,12 +41,12 @@ impl Paths {
         let prefix = if exe_name.contains("rice-cooker") {
             "rice-cooker"
         } else {
-            "phantom-cooker"
+            "rice-cooker"
         };
         let xdg = BaseDirectories::with_prefix(prefix);
-        // PHANTOM_COOKER_CACHE_DIR redirects the whole cache root without touching
+        // RICE_COOKER_CACHE_DIR redirects the whole cache root without touching
         // XDG env vars — convenient for tests against the built binary.
-        let cache_home = match std::env::var("PHANTOM_COOKER_CACHE_DIR") {
+        let cache_home = match std::env::var("RICE_COOKER_CACHE_DIR") {
             Ok(s) if !s.is_empty() => PathBuf::from(s),
             _ => xdg.get_cache_home().ok_or_else(|| {
                 anyhow!("cannot resolve cache home — set XDG_CACHE_HOME or ensure HOME is absolute")
@@ -268,8 +268,8 @@ mod tests {
     fn tmp_paths() -> (tempfile::TempDir, Paths) {
         let t = tempfile::tempdir().unwrap();
         let home = t.path().to_path_buf();
-        let cache_home = home.join(".cache/phantom-cooker");
-        let data_home = home.join(".local/share/phantom-cooker");
+        let cache_home = home.join(".cache/rice-cooker");
+        let data_home = home.join(".local/share/rice-cooker");
         fs::create_dir_all(&cache_home).unwrap();
         fs::create_dir_all(&data_home).unwrap();
         let paths = Paths::at_roots(home, cache_home, data_home);

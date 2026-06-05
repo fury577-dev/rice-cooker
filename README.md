@@ -57,6 +57,11 @@ preview and install times depend on the size of the rice. you may be prompted fo
 - ↓   move selection down
 - ↵   apply selection
 
+## rice hook scripts
+
+rices can define custom bash hook scripts in their root directories to orchestrate system-wide theme transformations:
+- **`cooker-install.sh`**: runs immediately after the rice is successfully launched. use this to disable system-wide wallpaper daemons, set window border colors (`hyprctl keyword`), or load specific color palettes.
+- **`cooker-uninstall.sh`**: runs during deactivation before restoring the original shell. use this to reload your default window manager configs and restart services.
 
 ## submitting a rice
 

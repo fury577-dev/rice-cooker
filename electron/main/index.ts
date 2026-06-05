@@ -15,9 +15,9 @@ import type {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const execFileAsync = promisify(execFile);
 
-const APP_CLASS_PATTERN = /^(electron|Electron|phantom-cooker)$/;
-const APP_TITLE = 'Phantom Cooker';
-const APP_ICON_FILE = 'phantom-cooker.png';
+const APP_CLASS_PATTERN = /^(electron|Electron|rice-cooker)$/;
+const APP_TITLE = 'Rice Cooker';
+const APP_ICON_FILE = 'rice-cooker.png';
 const CONFLICTING_SHELLS = ['waybar', 'ags', 'astal', 'eww', 'yambar'] as const;
 const HYPRLAND_WINDOW_EFFECTS = [
   ['no_blur', 'on'],
@@ -27,7 +27,7 @@ const HYPRLAND_WINDOW_EFFECTS = [
 ] as const;
 
 process.title = APP_TITLE;
-app.setName('phantom-cooker');
+app.setName('rice-cooker');
 
 if (process.env['XDG_SESSION_TYPE'] === 'wayland') {
   app.commandLine.appendSwitch('ozone-platform', 'wayland');
@@ -121,21 +121,21 @@ async function environmentCheck(): Promise<EnvironmentCheckResult> {
 }
 
 function backendBin(): string {
-  const override = process.env['PHANTOM_COOKER_BACKEND'];
+  const override = process.env['RICE_COOKER_BACKEND'];
   if (override) return override;
-  if (app.isPackaged) return 'phantom-cooker-backend';
+  if (app.isPackaged) return 'rice-cooker-backend';
 
   for (const candidate of [
-    join(process.cwd(), 'backend/target/debug/phantom-cooker-backend'),
-    join(process.cwd(), 'backend/target/release/phantom-cooker-backend'),
+    join(process.cwd(), 'backend/target/debug/rice-cooker-backend'),
+    join(process.cwd(), 'backend/target/release/rice-cooker-backend'),
   ]) {
     if (existsSync(candidate)) return candidate;
   }
-  return 'phantom-cooker-backend';
+  return 'rice-cooker-backend';
 }
 
 function backendBaseArgs(): string[] {
-  if (process.env['PHANTOM_COOKER_CATALOG']) return [];
+  if (process.env['RICE_COOKER_CATALOG']) return [];
 
   for (const candidate of [
     join(process.cwd(), 'backend/catalog.toml'),
@@ -185,7 +185,7 @@ function createBackendRunLog(runId: string): {
 } {
   try {
     const cacheHome = process.env['XDG_CACHE_HOME'] || join(homedir(), '.cache');
-    const dir = join(cacheHome, 'phantom-cooker');
+    const dir = join(cacheHome, 'rice-cooker');
     mkdirSync(dir, { recursive: true });
 
     const logPath = join(dir, 'last-run.ndjson');

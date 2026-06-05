@@ -199,7 +199,7 @@ mod tests {
             commit: "abc123".into(),
             installed_at: InstallRecord::now_rfc3339(),
             symlink_path: Some(PathBuf::from("/home/x/.config/quickshell/dms")),
-            symlink_target: Some(PathBuf::from("/home/x/.cache/phantom-cooker/rices/dms")),
+            symlink_target: Some(PathBuf::from("/home/x/.cache/rice-cooker/rices/dms")),
             pacman_diff: PacmanDiff {
                 added_explicit: vec!["caelestia-shell-git".into()],
                 removed: Vec::new(),
@@ -235,7 +235,7 @@ mod tests {
             name: "dms".into(),
             commit: "abc123".into(),
             symlink_path: Some(PathBuf::from("/home/x/.config/quickshell/dms")),
-            symlink_target: Some(PathBuf::from("/home/x/.cache/phantom-cooker/rices/dms")),
+            symlink_target: Some(PathBuf::from("/home/x/.cache/rice-cooker/rices/dms")),
             pre_all: vec!["quickshell".into()],
             pre_explicit: vec!["quickshell".into()],
         };

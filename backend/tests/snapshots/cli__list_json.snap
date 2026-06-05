@@ -16,7 +16,7 @@ expression: stdout
     "display_name": "Two",
     "creator_name": "author-two",
     "repo": "https://example.invalid/two",
-    "install_supported": false,
+    "install_supported": true,
     "installed": false
   }
 ]
